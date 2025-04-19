@@ -12,4 +12,19 @@
 using namespace std;
 
 namespace uiuc {
+    HSLAPixel::HSLAPixel() {
+        this->h = 0;
+        this->s = 0;
+        this->l = 1;
+        this->a = 1;
+    }
+    
+    HSLAPixel::HSLAPixel(double h, double s, double l, double a) {
+        this->h = h;
+        this->s = s;
+        this->l = l;
+        this->a = a;
+    }
+    
+    // HSLAPixel::~HSLAPixel() { }
 }

@@ -11,8 +11,8 @@
 
 Write your name and email address in the comment space here:
 
-Name:
-Email:
+Name: Samuel Adjei Mensah
+Email: simieldev@gmail.com
 
 (...end multi-line comment.)
 ******************** */
@@ -67,6 +67,25 @@ PNG grayscale(PNG image) {
  * @return The image with a spotlight.
  */
 PNG createSpotlight(PNG image, int centerX, int centerY) {
+  // Loop through every pixel in the image
+  for (unsigned x = 0; x < image.width(); x++){
+    for (unsigned y = 0; y < image.height(); y++){
+      // Get the pixel at (x,y)
+      HSLAPixel & pixel = image.getPixel(x, y);
+
+      // Calculate the distance from the pixel to the center
+      double xDist = x - centerX;
+      double yDist = y - centerY;
+
+      double distance = sqrt((xDist * xDist) + (yDist * yDist));
+
+      // Calculate the luminance decrease factor
+      double reduction = distance * 0.005; // 0.5% per pixel
+      if (reduction > 0.8) reduction = 0.8;
+
+      pixel.l *= (1 - reduction);  // Reduce luminance
+    }
+  }
 
   return image;
   
@@ -84,6 +103,22 @@ PNG createSpotlight(PNG image, int centerX, int centerY) {
  * @return The illinify'd image.
 **/
 PNG illinify(PNG image) {
+
+  const double orange = 11.0;
+  const double blue = 216.0;
+
+  for (unsigned x = 0; x < image.width(); x++) {
+    for (unsigned y = 0; y < image.height(); y++) {
+      HSLAPixel & pixel = image.getPixel(x, y);
+
+      // Calculate the shortest distance between pixel.h and the Illini hues
+      double distToOrange = std::min(abs(pixel.h - orange), 360 - abs(pixel.h - orange));
+      double distToBlue = std::min(abs(pixel.h - blue), 360 - abs(pixel.h - blue));
+
+      pixel.h = (distToOrange < distToBlue) ? orange : blue;
+    }
+  }
+
 
   return image;
 }
@@ -103,5 +138,19 @@ PNG illinify(PNG image) {
 */
 PNG watermark(PNG firstImage, PNG secondImage) {
 
+  unsigned width = std::min(firstImage.width(), secondImage.width());
+  unsigned height = std::min(firstImage.height(), secondImage.height());
+
+  for (unsigned x = 0; x < width; x++) {
+    for (unsigned y = 0; y < height; y++) {
+      HSLAPixel & basePixel = firstImage.getPixel(x, y);
+      HSLAPixel & stencilPixel = secondImage.getPixel(x, y);
+
+      if (stencilPixel.l == 1.0) {
+        basePixel.l = std::min(1.0, basePixel.l + 0.2);
+      }
+    }
+  }
+  
   return firstImage;
 }
