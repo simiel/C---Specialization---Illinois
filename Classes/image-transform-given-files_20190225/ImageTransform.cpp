@@ -74,8 +74,8 @@ PNG createSpotlight(PNG image, int centerX, int centerY) {
       HSLAPixel & pixel = image.getPixel(x, y);
 
       // Calculate the distance from the pixel to the center
-      double xDist = x - centerX;
-      double yDist = y - centerY;
+      double xDist = static_cast<int>(x) - centerX;
+      double yDist = static_cast<int>(y) - centerY;
 
       double distance = sqrt((xDist * xDist) + (yDist * yDist));
 
