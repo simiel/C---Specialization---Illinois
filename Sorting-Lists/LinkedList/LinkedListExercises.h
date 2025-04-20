@@ -128,6 +128,30 @@ void LinkedList<T>::insertOrdered(const T& newData) {
   // to update all next, prev, head_, and tail_ pointers as needed on your
   // new node or on those existing nodes that are adjacent to the new node.
 
+  Node * newNode = new Node(newData);
+  if (head_ == nullptr) {
+    head_ = newNode;
+    tail_ = newNode;
+  } else if (newData < head_->data) {
+    newNode->next = head_;
+    head_->prev = newNode;
+    head_ = newNode;
+  } else if (newData >= tail_->data) {
+    tail_->next = newNode;
+    newNode->prev = tail_;
+    tail_ = newNode;
+  } else {
+    Node* current = head_;
+    while (current != nullptr && current->data < newData) {
+      current = current->next;
+    }
+    newNode->next = current;
+    newNode->prev = current->prev;
+    current->prev->next = newNode;
+    current->prev = newNode;
+  }
+  size_++;
+
 }
 
 /********************************************************************
@@ -253,6 +277,33 @@ LinkedList<T> LinkedList<T>::merge(const LinkedList<T>& other) const {
   // notice that all of our nodes are created on the heap? The part of the
   // list that we pass back is really small; it just contains two pointers
   // and an int.)
+
+
+  Node* leftPtr = left.head_;
+  Node* rightPtr = right.head_;
+
+  while (leftPtr != nullptr && rightPtr != nullptr) {
+      if (leftPtr->data <= rightPtr->data) {
+          merged.pushBack(leftPtr->data);
+          leftPtr = leftPtr->next;
+      } else {
+          merged.pushBack(rightPtr->data);
+          rightPtr = rightPtr->next;
+      }
+  }
+
+  // Copy remaining elements
+  while (leftPtr != nullptr) {
+      merged.pushBack(leftPtr->data);
+      leftPtr = leftPtr->next;
+  }
+
+  while (rightPtr != nullptr) {
+      merged.pushBack(rightPtr->data);
+      rightPtr = rightPtr->next;
+  }
+
+
   return merged;
 }
 
