@@ -53,9 +53,12 @@
 StringIntMap makeWordCounts(const StringVec& words) {
   StringIntMap wordcount_map;
 
-  // =================================================
-  // EXERCISE 1 WORKSPACE: YOUR CODE HERE
-  // =================================================
+  // Iterate through each word in the input vector
+  for (const std::string& word : words) {
+    // If the word is already in the map, increment its count
+    // If not, it will be inserted with a default value of 0, then incremented to 1
+    wordcount_map[word]++;
+  }
 
   return wordcount_map;
 }
@@ -97,11 +100,16 @@ StringIntMap makeWordCounts(const StringVec& words) {
 
 int lookupWithFallback(const StringIntMap& wordcount_map, const std::string& key, int fallbackVal) {
 
-  // =================================================
-  // EXERCISE 2 WORKSPACE: YOUR CODE HERE
-  // =================================================
-
-  return -1337; // Change this!
+  // Check if the key exists in the map using count()
+  if (wordcount_map.count(key) > 0) {
+    // Key exists, return its associated value
+    // We use .at() to access the value in a const map
+    return wordcount_map.at(key);
+  }
+  else {
+    // Key doesn't exist, return the fallback value
+    return fallbackVal;
+  }
 }
 
 
@@ -206,16 +214,8 @@ int memoizedLongestPalindromeLength(LengthMemo& memo, const std::string& str, in
   //  create the entry with a default value if it doesn't already exist!)
   if (memo.count(pairKey)) {
 
-    // ====================================================================
-    // EXERCISE 3 - PART A - YOUR CODE HERE!
-
-    // We've calculated this subproblem before, and that's why there's a key
-    // for it in the memoization table already. We won't calculate anything
-    // new in this case. So, we also won't store anything new in the table in
-    // this case, only return what's already stored at this key in the map.
-
-    return -1337; // Hint: You need to change this!
-    // ====================================================================
+    // If we've already computed this subproblem, return the memoized result
+    return memo[pairKey];
 
   }
 
@@ -318,10 +318,7 @@ int memoizedLongestPalindromeLength(LengthMemo& memo, const std::string& str, in
   // We can also store this result for memoization purposes.
   int greaterResult = std::max(leftSubproblemResult,rightSubproblemResult);
 
-  // =======================================================================
-  // EXERCISE 3 - PART B - YOUR CODE HERE!
-  //
-  return -1337; // Hint: You need to change this!
-  // =======================================================================
+  memo[pairKey] = greaterResult;
+  return greaterResult;
 }
 
